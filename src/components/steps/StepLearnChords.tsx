@@ -7,11 +7,12 @@ interface StepLearnChordsProps {
   onComplete: () => void;
   hasFreeTrialUsed: boolean;
   onReturnHome: () => void;
+  onSaveSong: (song: Song) => void;
 }
 
-const StepLearnChords: React.FC<StepLearnChordsProps> = ({ 
-  song, 
-  onComplete, 
+const StepLearnChords: React.FC<StepLearnChordsProps> = ({
+  song,
+  onComplete,
   hasFreeTrialUsed,
   onReturnHome
 }) => {
@@ -46,12 +47,12 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
     // For demo purposes, we'll simulate successful chord detection
     setIsListening(true);
     setFeedback('Listening...');
-    
+
     setTimeout(() => {
       setIsListening(false);
       // Simulate 80% success rate
       const isCorrect = Math.random() > 0.2;
-      
+
       if (isCorrect) {
         setFeedback(`Perfect! ${song.chords[currentChordIndex].name} sounds great!`);
         setTimeout(() => {
@@ -77,7 +78,7 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
         </h1>
         <p className="text-xl text-charcoal-700">Master the intro in minutes.</p>
       </div>
-      
+
       <div className="max-w-4xl mx-auto">
         {!isCompleted ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -86,13 +87,13 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                 <h2 className="text-xl font-bold mb-4 text-charcoal-900">Chord Progression</h2>
                 <div className="space-y-2 mb-6">
                   {song.chords.map((chord, index) => (
-                    <div 
-                      key={chord.name + index} 
+                    <div
+                      key={chord.name + index}
                       className={`p-2 rounded-md ${
-                        index === currentChordIndex 
-                          ? 'bg-coral-500 text-white font-medium' 
-                          : index < currentChordIndex 
-                            ? 'bg-green-100 text-green-800' 
+                        index === currentChordIndex
+                          ? 'bg-coral-500 text-white font-medium'
+                          : index < currentChordIndex
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-charcoal-800'
                       }`}
                     >
@@ -100,21 +101,21 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="mb-6">
                   <div className="flex justify-between text-sm mb-1">
                     <span>Progress</span>
                     <span>{currentChordIndex}/{song.chords.length} chords</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div 
-                      className="bg-coral-500 h-2.5 rounded-full transition-all duration-500" 
+                    <div
+                      className="bg-coral-500 h-2.5 rounded-full transition-all duration-500"
                       style={{ width: `${progress}%` }}
                     ></div>
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-cream-200 rounded-lg p-4">
                 <h3 className="font-medium text-charcoal-900 mb-2">Playing Tips</h3>
                 <ul className="text-sm text-charcoal-800 space-y-2">
@@ -125,7 +126,7 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                 </ul>
               </div>
             </div>
-            
+
             <div className="md:col-span-2">
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <div className="mb-6">
@@ -136,31 +137,31 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                     Position your fingers as shown in the diagram and strum all strings clearly.
                   </p>
                 </div>
-                
+
                 <div className="flex flex-wrap justify-center gap-4 mb-8">
                   {song.chords.map((chord, index) => (
-                    <ChordDiagram 
-                      key={chord.name + index} 
-                      chord={chord} 
-                      isActive={index === currentChordIndex} 
+                    <ChordDiagram
+                      key={chord.name + index}
+                      chord={chord}
+                      isActive={index === currentChordIndex}
                     />
                   ))}
                 </div>
-                
+
                 {feedback && (
                   <div className={`mb-6 p-4 rounded-lg ${
-                    feedback.includes('Perfect') 
-                      ? 'bg-green-100 text-green-800' 
-                      : feedback.includes('Try again') 
+                    feedback.includes('Perfect')
+                      ? 'bg-green-100 text-green-800'
+                      : feedback.includes('Try again')
                         ? 'bg-red-100 text-red-800'
                         : 'bg-blue-100 text-blue-800'
                   }`}>
                     {feedback}
                   </div>
                 )}
-                
-                <button 
-                  onClick={listenForChord} 
+
+                <button
+                  onClick={listenForChord}
                   disabled={isListening}
                   className={`btn-primary w-full py-3 ${isListening ? 'opacity-75 cursor-not-allowed' : ''}`}
                 >
@@ -178,25 +179,25 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                 </svg>
               </div>
             </div>
-            
+
             <h2 className="text-2xl font-bold mb-3 text-charcoal-900">
               Congratulations!
             </h2>
             <p className="text-xl mb-6 text-charcoal-700">
               You've nailed {song.title}'s intro!
             </p>
-            
+
             {hasFreeTrialUsed ? (
               <div className="mb-8">
                 <p className="mb-4 text-charcoal-800">
-                  You've used your free song. Subscribe now to unlock our full library of songs 
+                  You've used your free song. Subscribe now to unlock our full library of songs
                   with advanced AI feedback.
                 </p>
                 <button className="btn-primary py-3 px-8 mb-4">
                   Subscribe for $9.99/month
                 </button>
                 <div>
-                  <button 
+                  <button
                     onClick={onReturnHome}
                     className="text-charcoal-700 hover:text-coral-500 transition-colors"
                   >
@@ -210,7 +211,7 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                   Ready to learn more? Try another song or subscribe for unlimited access.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <button 
+                  <button
                     onClick={onReturnHome}
                     className="btn-secondary py-3 px-8"
                   >

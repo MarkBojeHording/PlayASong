@@ -23,8 +23,46 @@ const StepTuning: React.FC<StepTuningProps> = ({ onNext }) => {
   }, [tuningNotes]);
 
   const playReferenceNote = (index: number) => {
-    // In a real app, you would play the actual note using Web Audio API
-    console.log(`Playing reference note: ${tuningNotes[index].name}`);
+    const note = tuningNotes[index];
+    if (!note || typeof note.frequency !== 'number') {
+      console.error('Invalid note or frequency for index:', index);
+      return;
+    }
+
+    // Create a new AudioContext
+    // @ts-expect-error: webkitAudioContext is not typed on window but needed for Safari support
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+      console.error("Browser doesn't support AudioContext.");
+      return;
+    }
+    const audioContext = new AudioContextClass();
+
+    // Create an OscillatorNode
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = 'sine'; // Sine wave for a pure tone
+    oscillator.frequency.setValueAtTime(note.frequency, audioContext.currentTime);
+
+    // Create a GainNode for volume control and smooth start/stop
+    const gainNode = audioContext.createGain();
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime); // Start silent
+    gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.05); // Fade in quickly to 50% volume
+    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.95); // Fade out starting at 0.95s
+
+    // Connect nodes: oscillator -> gain -> destination (speakers)
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    // Start the oscillator now
+    oscillator.start(audioContext.currentTime);
+
+    // Stop the oscillator after 1 second
+    oscillator.stop(audioContext.currentTime + 1);
+
+    // Close the AudioContext after the sound has finished to free resources
+    setTimeout(() => {
+      audioContext.close();
+    }, 1500); // Allow a bit more time before closing
   };
 
   const markNoteAsTuned = (index: number) => {
@@ -37,13 +75,57 @@ const StepTuning: React.FC<StepTuningProps> = ({ onNext }) => {
 
   return (
     <div className="step-container fade-in">
-      <div className="max-w-3xl mx-auto text-center mb-12">
-        <h1 className="text-3xl font-bold mb-3 text-charcoal-900">Tune Your Guitar Perfectly</h1>
-        <p className="text-xl text-charcoal-700">Set up for standard tuning (EADGBE).</p>
+      <div className="max-w-5xl mx-auto text-center mb-12">
+        <h1 className="text-3xl font-bold mb-3 text-white">Tune Your Guitar Perfectly</h1>
+        <p className="text-xl text-white">Set up for standard tuning (EADGBE).</p>
       </div>
 
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="max-w-5xl mx-auto">
+        <div className="bg-white rounded-lg p-6 mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-charcoal-900 text-center">Understanding Your Guitar Strings</h2>
+          <p className="text-charcoal-800 mb-4 text-center">
+            Your guitar has 6 strings, each with its own note. From thickest to thinnest:
+          </p>
+          <div className="flex flex-col md:flex-row items-center gap-8 mb-6">
+            <div className="flex-[2] flex justify-center items-center">
+              <div className="w-full bg-cream-100 rounded-lg p-4 flex flex-col justify-center mx-auto h-[340px]">
+                {[
+                  { num: 6, label: 'Low E (6th string)' },
+                  { num: 5, label: 'A (5th string)' },
+                  { num: 4, label: 'D (4th string)' },
+                  { num: 3, label: 'G (3rd string)' },
+                  { num: 2, label: 'B (2nd string)' },
+                  { num: 1, label: 'High E (1st string)' },
+                ].map(({ num, label }) => {
+                  const thickness = [6, 5, 4].includes(num) ? 'h-2' : [3, 2].includes(num) ? 'h-1.5' : 'h-1';
+                  return (
+                    <div key={num} className="flex flex-row items-center mb-4 last:mb-0 w-full px-2">
+                      <div className="text-charcoal-800 text-sm mr-3 whitespace-nowrap flex-shrink-0 text-right min-w-[140px]">
+                        {label}
+                      </div>
+                      <div className="w-10 h-10 bg-coral-500 text-white rounded-full flex items-center justify-center text-lg font-bold mx-3 flex-shrink-0">
+                        {num}
+                      </div>
+                      <div className={`bg-charcoal-800 rounded-full flex-grow ${thickness}`}></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="flex-1 flex justify-center items-center">
+              <div className="h-[340px] flex items-center">
+                <img
+                  src="/images/guitar-string.png"
+                  alt="Close-up of fingers on guitar strings"
+                  className="rounded-lg shadow-lg object-cover h-full"
+                  style={{ aspectRatio: '4/3' }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 mb-8">
           <p className="text-charcoal-800 mb-6">
             Click a string to hear its correct pitch, then play it on your guitar.
             Adjust the tuning pegs until our AI confirms it's spot-on. For this demo,

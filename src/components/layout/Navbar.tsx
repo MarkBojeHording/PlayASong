@@ -3,6 +3,7 @@ import { Menu, X, Guitar, Sparkles, Music, Heart } from 'lucide-react';
 
 interface NavbarProps {
   onNavigate: (step: number) => void;
+  currentStep: number;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
@@ -19,12 +20,12 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
   return (
     <nav className="bg-teal-900 text-white sticky top-0 z-50 shadow-md">
-      <div className="max-w-7xl mx-auto px-0 sm:px-2 lg:px-4">
-        <div className="flex justify-between h-20">
+      <div className="w-full">
+        <div className="flex justify-between h-20 px-4">
           <div className="flex items-center">
             <button
               onClick={() => onNavigate(1)}
-              className="flex items-center space-x-3 -ml-4"
+              className="flex items-center space-x-3"
             >
               <Guitar className="h-10 w-10 text-coral-500" />
               <span className="text-2xl font-bold text-coral-500">PlayASong</span>

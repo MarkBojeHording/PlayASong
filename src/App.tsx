@@ -8,22 +8,31 @@ import StepSongSelection from './components/steps/StepSongSelection';
 import StepLearnChords from './components/steps/StepLearnChords';
 import { Song } from './types';
 
+function getStepFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const step = parseInt(params.get('step') || '1', 10);
+  return isNaN(step) ? 1 : step;
+}
+
 const App: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(getStepFromUrl());
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [savedSongs, setSavedSongs] = useState<Song[]>([]);
 
   useEffect(() => {
-    // Add initial history state
-    window.history.pushState({ step: currentStep }, '', window.location.href);
+    // Update the URL when currentStep changes
+    const params = new URLSearchParams(window.location.search);
+    params.set('step', String(currentStep));
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({ step: currentStep }, '', newUrl);
+  }, [currentStep]);
 
+  useEffect(() => {
     // Handle browser back/forward navigation
-    const handlePopState = (event: PopStateEvent) => {
-      if (event.state && event.state.step) {
-        setCurrentStep(event.state.step);
-      }
+    const handlePopState = () => {
+      const step = getStepFromUrl();
+      setCurrentStep(step);
     };
-
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
@@ -32,7 +41,10 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
     setCurrentStep(step);
     // Update history state when step changes
-    window.history.pushState({ step }, '', window.location.href);
+    const params = new URLSearchParams(window.location.search);
+    params.set('step', String(step));
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.pushState({ step }, '', newUrl);
   };
 
   const handleSongSelect = (song: Song) => {
@@ -69,6 +81,7 @@ const App: React.FC = () => {
             onComplete={() => handleStepChange(1)}
             onSaveSong={handleSaveSong}
             onReturnHome={() => handleStepChange(1)}
+            hasFreeTrialUsed={false}
           />
         );
       default:
