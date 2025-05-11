@@ -11,8 +11,7 @@ import { Song } from './types';
 const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [hasFreeTrialUsed, setHasFreeTrialUsed] = useState<boolean>(false);
+  const [savedSongs, setSavedSongs] = useState<Song[]>([]);
 
   const handleStepChange = (step: number) => {
     window.scrollTo(0, 0);
@@ -23,8 +22,10 @@ const App: React.FC = () => {
     setSelectedSong(song);
   };
 
-  const handleSongCompletion = () => {
-    setHasFreeTrialUsed(true);
+  const handleSaveSong = (song: Song) => {
+    if (!savedSongs.find(s => s.id === song.id)) {
+      setSavedSongs([...savedSongs, song]);
+    }
   };
 
   const renderCurrentStep = () => {
@@ -40,15 +41,16 @@ const App: React.FC = () => {
           <StepSongSelection
             onNext={() => handleStepChange(5)}
             onSelectSong={handleSongSelect}
-            hasFreeTrialUsed={hasFreeTrialUsed}
+            onSaveSong={handleSaveSong}
+            savedSongs={savedSongs}
           />
         );
       case 5:
         return (
           <StepLearnChords
             song={selectedSong}
-            onComplete={handleSongCompletion}
-            hasFreeTrialUsed={hasFreeTrialUsed}
+            onComplete={() => handleStepChange(1)}
+            onSaveSong={handleSaveSong}
             onReturnHome={() => handleStepChange(1)}
           />
         );
@@ -61,10 +63,7 @@ const App: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-cream-100">
       <Navbar 
         currentStep={currentStep} 
-        onNavigate={handleStepChange} 
-        isLoggedIn={isLoggedIn}
-        onLogin={() => setIsLoggedIn(true)}
-        onLogout={() => setIsLoggedIn(false)}
+        onNavigate={handleStepChange}
       />
       <main className="flex-grow">
         {renderCurrentStep()}

@@ -4,18 +4,9 @@ import { Menu, X, Guitar } from 'lucide-react';
 interface NavbarProps {
   currentStep: number;
   onNavigate: (step: number) => void;
-  isLoggedIn: boolean;
-  onLogin: () => void;
-  onLogout: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ 
-  currentStep, 
-  onNavigate, 
-  isLoggedIn, 
-  onLogin, 
-  onLogout 
-}) => {
+const Navbar: React.FC<NavbarProps> = ({ currentStep, onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
 
@@ -47,7 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({
               onClick={() => onNavigate(1)} 
               className="text-cream-100 hover:text-coral-500 transition-colors"
             >
-              Home
+              How It Works
             </button>
             <button 
               onClick={togglePricing} 
@@ -65,32 +56,6 @@ const Navbar: React.FC<NavbarProps> = ({
             >
               Contact
             </button>
-            {isLoggedIn ? (
-              <div className="flex items-center space-x-3">
-                <span className="text-cream-100">Hi, User</span>
-                <button
-                  onClick={onLogout}
-                  className="bg-teal-800 hover:bg-teal-700 text-white px-3 py-1 rounded-md transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={onLogin}
-                  className="bg-teal-800 hover:bg-teal-700 text-white px-3 py-1 rounded-md transition-colors"
-                >
-                  Login
-                </button>
-                <button
-                  onClick={onLogin}
-                  className="bg-coral-500 hover:bg-coral-600 text-white px-3 py-1 rounded-md transition-colors"
-                >
-                  Sign Up
-                </button>
-              </div>
-            )}
           </div>
           
           {/* Mobile menu button */}
@@ -120,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({
               }}
               className="block px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
             >
-              Home
+              How It Works
             </button>
             <button
               onClick={() => {
@@ -141,41 +106,6 @@ const Navbar: React.FC<NavbarProps> = ({
             >
               Contact
             </button>
-            {isLoggedIn ? (
-              <>
-                <div className="px-3 py-2 text-cream-100">Hi, User</div>
-                <button
-                  onClick={() => {
-                    onLogout();
-                    toggleMenu();
-                  }}
-                  className="block w-full px-3 py-2 text-left rounded-md bg-teal-700 text-white hover:bg-teal-600"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <div className="space-y-2">
-                <button
-                  onClick={() => {
-                    onLogin();
-                    toggleMenu();
-                  }}
-                  className="block w-full px-3 py-2 text-left rounded-md bg-teal-700 text-white hover:bg-teal-600"
-                >
-                  Login
-                </button>
-                <button
-                  onClick={() => {
-                    onLogin();
-                    toggleMenu();
-                  }}
-                  className="block w-full px-3 py-2 text-left rounded-md bg-coral-500 text-white hover:bg-coral-600"
-                >
-                  Sign Up
-                </button>
-              </div>
-            )}
           </div>
         </div>
       )}
@@ -190,91 +120,56 @@ const Navbar: React.FC<NavbarProps> = ({
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <p className="mb-6 text-charcoal-700">Start free, then go unlimited.</p>
             
-            <div className="space-y-4 mb-6">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 h-5 w-5 relative mt-1">
-                  <svg
-                    className="absolute h-5 w-5 text-coral-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <p className="ml-3 text-charcoal-800">
-                  <span className="font-medium">Free Tier:</span> Learn one song free. No payment required.
-                </p>
+            <div className="space-y-6">
+              <div className="bg-cream-100 p-6 rounded-lg">
+                <h3 className="text-xl font-bold mb-2 text-charcoal-900">Free Trial</h3>
+                <ul className="space-y-2 mb-4">
+                  <li className="flex items-center text-charcoal-700">
+                    <span className="mr-2">✓</span> Learn one complete song
+                  </li>
+                  <li className="flex items-center text-charcoal-700">
+                    <span className="mr-2">✓</span> Basic AI feedback
+                  </li>
+                  <li className="flex items-center text-charcoal-700">
+                    <span className="mr-2">✓</span> Guitar tuner
+                  </li>
+                </ul>
+                <button className="w-full bg-coral-500 text-white py-2 rounded-lg hover:bg-coral-600 transition-colors">
+                  Start Free Trial
+                </button>
               </div>
-              
-              <div className="flex items-start">
-                <div className="flex-shrink-0 h-5 w-5 relative mt-1">
-                  <svg
-                    className="absolute h-5 w-5 text-coral-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <p className="ml-3 text-charcoal-800">
-                  <span className="font-medium">Premium Tier:</span> $9.99/month for unlimited songs, advanced AI feedback, and new songs monthly.
-                </p>
+
+              <div className="bg-teal-900 p-6 rounded-lg text-white">
+                <h3 className="text-xl font-bold mb-2">Premium Membership</h3>
+                <div className="text-2xl font-bold mb-4">$9.99/month</div>
+                <ul className="space-y-2 mb-4">
+                  <li className="flex items-center">
+                    <span className="mr-2">✓</span> Unlimited songs
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">✓</span> Advanced AI feedback
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">✓</span> Save favorite songs
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">✓</span> Adjustable learning pace
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">✓</span> Progress tracking
+                  </li>
+                </ul>
+                <button className="w-full bg-coral-500 text-white py-2 rounded-lg hover:bg-coral-600 transition-colors">
+                  Subscribe Now
+                </button>
               </div>
-            </div>
-            
-            <div className="p-4 bg-cream-100 rounded-lg mb-6">
-              <h3 className="font-medium text-charcoal-900 mb-2">Compare Plans</h3>
-              <div className="grid grid-cols-3 gap-2 text-sm">
-                <div className="col-span-1 font-medium">Feature</div>
-                <div className="col-span-1 text-center font-medium">Free</div>
-                <div className="col-span-1 text-center font-medium">Premium</div>
-                
-                <div className="col-span-1">Songs</div>
-                <div className="col-span-1 text-center">1</div>
-                <div className="col-span-1 text-center">Unlimited</div>
-                
-                <div className="col-span-1">Feedback</div>
-                <div className="col-span-1 text-center">Basic</div>
-                <div className="col-span-1 text-center">Advanced</div>
-                
-                <div className="col-span-1">Support</div>
-                <div className="col-span-1 text-center">None</div>
-                <div className="col-span-1 text-center">Priority</div>
-              </div>
-            </div>
-            
-            <p className="text-sm text-charcoal-700 mb-6">
-              Cancel anytime. 30-day money-back guarantee.
-            </p>
-            
-            <div className="flex justify-center space-x-4">
-              <button 
-                onClick={() => {
-                  onNavigate(1);
-                  togglePricing();
-                }}
-                className="btn-primary"
-              >
-                Start Free
-              </button>
-              <button 
-                onClick={togglePricing}
-                className="btn-secondary"
-              >
-                Subscribe for $9.99/month
-              </button>
+
+              <p className="text-sm text-center text-charcoal-700">
+                No commitment required. Cancel anytime.
+                <br />
+                30-day money-back guarantee.
+              </p>
             </div>
           </div>
         </div>
