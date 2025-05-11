@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Menu, X, Guitar } from 'lucide-react';
+import { Menu, X, Guitar, Sparkles, Music, Heart } from 'lucide-react';
 
 interface NavbarProps {
-  currentStep: number;
   onNavigate: (step: number) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ currentStep, onNavigate }) => {
+const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
 
@@ -20,44 +19,60 @@ const Navbar: React.FC<NavbarProps> = ({ currentStep, onNavigate }) => {
 
   return (
     <nav className="bg-teal-900 text-white sticky top-0 z-50 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+      <div className="max-w-7xl mx-auto px-0 sm:px-2 lg:px-4">
+        <div className="flex justify-between h-20">
           <div className="flex items-center">
-            <button 
-              onClick={() => onNavigate(1)} 
-              className="flex items-center space-x-2"
+            <button
+              onClick={() => onNavigate(1)}
+              className="flex items-center space-x-3 -ml-4"
             >
-              <Guitar className="h-8 w-8 text-coral-500" />
-              <span className="text-xl font-bold text-coral-500">PlayASong</span>
+              <Guitar className="h-10 w-10 text-coral-500" />
+              <span className="text-2xl font-bold text-coral-500">PlayASong</span>
             </button>
           </div>
-          
+
+          {/* Badges */}
+          <div className="hidden md:flex items-center space-x-3">
+            <div className="flex items-center space-x-1 bg-teal-800 px-3 py-1 rounded-full">
+              <Sparkles className="h-4 w-4 text-coral-500" />
+              <span className="text-sm text-cream-100">AI-Driven Learning</span>
+            </div>
+            <div className="flex items-center space-x-1 bg-teal-800 px-3 py-1 rounded-full">
+              <Music className="h-4 w-4 text-coral-500" />
+              <span className="text-sm text-cream-100">Perfect for Beginners</span>
+            </div>
+            <div className="flex items-center space-x-1 bg-teal-800 px-3 py-1 rounded-full">
+              <Heart className="h-4 w-4 text-coral-500" />
+              <span className="text-sm text-cream-100">Easy and Simple for Everyone</span>
+            </div>
+          </div>
+
           {/* Desktop navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <button 
-              onClick={() => onNavigate(1)} 
+          <div className="hidden md:flex items-center space-x-8">
+            <button
+              onClick={() => onNavigate(1)}
               className="text-cream-100 hover:text-coral-500 transition-colors"
             >
               How It Works
             </button>
-            <button 
-              onClick={togglePricing} 
+            <button
+              onClick={togglePricing}
               className="text-cream-100 hover:text-coral-500 transition-colors"
             >
               Pricing
             </button>
-            <button 
+            <button
               className="text-cream-100 hover:text-coral-500 transition-colors"
             >
               About
             </button>
-            <button 
+            <button
               className="text-cream-100 hover:text-coral-500 transition-colors"
             >
               Contact
             </button>
           </div>
-          
+
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
@@ -73,7 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentStep, onNavigate }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden fade-in">
@@ -109,7 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentStep, onNavigate }) => {
           </div>
         </div>
       )}
-      
+
       {/* Pricing Modal */}
       {showPricing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -120,7 +135,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentStep, onNavigate }) => {
                 <X className="h-6 w-6" />
               </button>
             </div>
-            
+
             <div className="space-y-6">
               <div className="bg-cream-100 p-6 rounded-lg">
                 <h3 className="text-xl font-bold mb-2 text-charcoal-900">Free Trial</h3>
