@@ -73,10 +73,10 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
   return (
     <div className="step-container fade-in">
       <div className="max-w-4xl mx-auto text-center mb-8">
-        <h1 className="text-3xl font-bold mb-3 text-charcoal-900">
+        <h1 className="text-3xl font-bold mb-3 text-white">
           Play {song.title}'s Chords
         </h1>
-        <p className="text-xl text-charcoal-700">Master the intro in minutes.</p>
+        <p className="text-xl text-white">Master the intro in minutes.</p>
       </div>
 
       <div className="max-w-4xl mx-auto">
@@ -163,6 +163,7 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                 <button
                   onClick={listenForChord}
                   disabled={isListening}
+                  type="button"
                   className={`btn-primary w-full py-3 ${isListening ? 'opacity-75 cursor-not-allowed' : ''}`}
                 >
                   {isListening ? 'Listening...' : `Play ${song.chords[currentChordIndex].name} Chord`}
