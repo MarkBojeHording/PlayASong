@@ -15,7 +15,6 @@ const StepSongSelection: React.FC<StepSongSelectionProps> = ({
   onSaveSong,
   savedSongs
 }) => {
-  const [selectedSongId, setSelectedSongId] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<'all' | 'rock' | 'pop'>('all');
 
   const songs: Song[] = [
@@ -122,14 +121,8 @@ const StepSongSelection: React.FC<StepSongSelectionProps> = ({
     : songs.filter(song => song.genre === selectedGenre);
 
   const handleSongSelect = (song: Song) => {
-    setSelectedSongId(song.id);
     onSelectSong(song);
-  };
-
-  const handleContinue = () => {
-    if (selectedSongId) {
-      onNext();
-    }
+    onNext();
   };
 
   return (
@@ -182,30 +175,17 @@ const StepSongSelection: React.FC<StepSongSelectionProps> = ({
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {filteredSongs.map((song) => (
               <SongCard
                 key={song.id}
                 song={song}
                 onSelect={handleSongSelect}
                 onSave={() => onSaveSong(song)}
-                isSelected={song.id === selectedSongId}
                 isSaved={savedSongs.some(s => s.id === song.id)}
               />
             ))}
           </div>
-        </div>
-
-        <div className="text-center">
-          <button
-            onClick={handleContinue}
-            className={`btn-secondary py-3 px-12 ${
-              selectedSongId ? '' : 'opacity-75 cursor-not-allowed'
-            }`}
-            disabled={!selectedSongId}
-          >
-            {selectedSongId ? "Start Learning This Song" : "Select a Song to Continue"}
-          </button>
         </div>
       </div>
     </div>

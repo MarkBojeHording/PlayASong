@@ -6,7 +6,6 @@ interface SongCardProps {
   song: Song;
   onSelect: (song: Song) => void;
   onSave: () => void;
-  isSelected: boolean;
   isSaved: boolean;
 }
 
@@ -14,7 +13,6 @@ const SongCard: React.FC<SongCardProps> = ({
   song, 
   onSelect, 
   onSave,
-  isSelected,
   isSaved
 }) => {
   const playPreview = (e: React.MouseEvent) => {
@@ -30,9 +28,7 @@ const SongCard: React.FC<SongCardProps> = ({
 
   return (
     <div 
-      className={`border rounded-lg overflow-hidden shadow-md cursor-pointer transition-all hover:shadow-coral hover:scale-105 ${
-        isSelected ? 'border-coral-500 shadow-coral' : 'border-gray-200'
-      }`}
+      className="border rounded-lg overflow-hidden shadow-md cursor-pointer transition-all hover:shadow-coral hover:scale-105"
       onClick={() => onSelect(song)}
     >
       <div className="relative h-40">
@@ -76,15 +72,6 @@ const SongCard: React.FC<SongCardProps> = ({
             </span>
           ))}
         </div>
-        <button
-          className={`w-full mt-4 py-2 rounded ${
-            isSelected 
-              ? 'bg-coral-500 text-white'
-              : 'bg-teal-900 text-white hover:bg-teal-800'
-          }`}
-        >
-          {isSelected ? 'Selected' : 'Select'}
-        </button>
       </div>
     </div>
   );
