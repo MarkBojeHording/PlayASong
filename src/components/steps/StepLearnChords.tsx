@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ChordDiagram from '../ui/ChordDiagram';
 import { Song } from '../../types';
 
 interface StepLearnChordsProps {
@@ -66,9 +67,9 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
     <div className="step-container fade-in">
       <div className="max-w-4xl mx-auto text-center mb-8">
         <h1 className="text-3xl font-bold mb-3 text-white">
-          Play {song.title}'s Chords
+          Learn {song.title}'s Chords
         </h1>
-        <p className="text-xl text-white">Master the intro in minutes.</p>
+        <p className="text-xl text-white">Master each chord one at a time.</p>
       </div>
 
       <div className="max-w-4xl mx-auto">
@@ -126,56 +127,46 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                     Current Chord: <span className="text-coral-500">{song.chords[currentChordIndex].name}</span>
                   </h2>
                   <p className="text-charcoal-700 mb-4">
-                    Follow the finger positions shown below and strum all strings.
+                    Follow the diagram below to place your fingers correctly on the fretboard.
                   </p>
                 </div>
 
-                <div className="mb-8">
-                  {/* Visual chord diagram with hand position */}
-                  <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
-                    <img
-                      src={`https://images.pexels.com/photos/7520935/pexels-photo-7520935.jpeg?auto=compress&cs=tinysrgb&w=1280`}
-                      alt={`How to play ${song.chords[currentChordIndex].name} chord`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <div className="text-center text-white">
-                        <h3 className="text-3xl font-bold mb-2">{song.chords[currentChordIndex].name}</h3>
-                        <p className="text-lg">Finger position: {song.chords[currentChordIndex].fingering}</p>
-                      </div>
-                    </div>
+                <div className="flex justify-center mb-8">
+                  <ChordDiagram
+                    chord={song.chords[currentChordIndex]}
+                    isActive={true}
+                  />
+                </div>
+
+                {feedback && (
+                  <div className={`mb-6 p-4 rounded-lg ${
+                    feedback.includes('Perfect')
+                      ? 'bg-green-100 text-green-800'
+                      : feedback.includes('Try again')
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-blue-100 text-blue-800'
+                  }`}>
+                    {feedback}
                   </div>
+                )}
 
-                  {feedback && (
-                    <div className={`mb-6 p-4 rounded-lg ${
-                      feedback.includes('Perfect')
-                        ? 'bg-green-100 text-green-800'
-                        : feedback.includes('Try again')
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-blue-100 text-blue-800'
-                    }`}>
-                      {feedback}
-                    </div>
-                  )}
+                <div className="space-y-4">
+                  <button
+                    onClick={listenForChord}
+                    disabled={isListening}
+                    className={`w-full btn-primary py-3 ${isListening ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  >
+                    {isListening ? 'Listening...' : `Play ${song.chords[currentChordIndex].name} Chord`}
+                  </button>
 
-                  <div className="space-y-4">
+                  {feedback.includes('Perfect') && (
                     <button
-                      onClick={listenForChord}
-                      disabled={isListening}
-                      className={`w-full btn-primary py-3 ${isListening ? 'opacity-75 cursor-not-allowed' : ''}`}
+                      onClick={handleContinue}
+                      className="w-full btn-secondary py-3"
                     >
-                      {isListening ? 'Listening...' : `Play ${song.chords[currentChordIndex].name} Chord`}
+                      Continue to Next Chord
                     </button>
-
-                    {feedback.includes('Perfect') && (
-                      <button
-                        onClick={handleContinue}
-                        className="w-full btn-secondary py-3"
-                      >
-                        Continue to Next Chord
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -194,7 +185,7 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
               Congratulations!
             </h2>
             <p className="text-xl mb-6 text-charcoal-700">
-              You've nailed {song.title}'s intro!
+              You've mastered {song.title}'s chords!
             </p>
 
             {hasFreeTrialUsed ? (
