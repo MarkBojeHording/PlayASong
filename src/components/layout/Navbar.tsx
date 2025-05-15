@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Guitar, Sparkles, Music, Heart } from 'lucide-react';
 
 interface NavbarProps {
@@ -9,6 +9,38 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
+  const [logoAnim, setLogoAnim] = useState('');
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle scroll animation
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!logoAnim) {
+        setLogoAnim('animate-logo-scroll');
+        if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(() => setLogoAnim(''), 700);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    };
+  }, [logoAnim]);
+
+  // Handle click animation (icon only)
+  const handleLogoIconClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLogoAnim('animate-logo-click');
+    setTimeout(() => setLogoAnim(''), 700);
+    onNavigate(1);
+  };
+
+  // Handle hover animation (icon only)
+  const handleLogoIconMouseEnter = () => {
+    setLogoAnim('animate-logo-scroll');
+    setTimeout(() => setLogoAnim(''), 700);
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -23,13 +55,25 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
       <div className="w-full">
         <div className="flex justify-between h-20 px-4">
           <div className="flex items-center">
-            <button
-              onClick={() => onNavigate(1)}
-              className="flex items-center space-x-3"
-            >
-              <Guitar className="h-10 w-10 text-coral-500" />
-              <span className="text-2xl font-bold text-coral-500">PlayASong</span>
-            </button>
+            <div className="flex items-center space-x-3 select-none">
+              <button
+                onClick={handleLogoIconClick}
+                onMouseEnter={handleLogoIconMouseEnter}
+                className={`focus:outline-none ${logoAnim}`}
+                type="button"
+                aria-label="Home"
+              >
+                <Guitar className={`h-10 w-10 text-coral-500 ${logoAnim}`} />
+              </button>
+              <button
+                onClick={() => onNavigate(1)}
+                className="text-2xl font-bold text-coral-500 bg-transparent border-none p-0 m-0 focus:outline-none hover:underline"
+                style={{ background: 'none' }}
+                type="button"
+              >
+                PlayASong
+              </button>
+            </div>
           </div>
 
           {/* Badges */}
@@ -50,12 +94,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
           {/* Desktop navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => onNavigate(1)}
-              className="text-cream-100 hover:text-coral-500 transition-colors"
-            >
-              How It Works
-            </button>
             <button
               onClick={togglePricing}
               className="text-cream-100 hover:text-coral-500 transition-colors"
@@ -94,15 +132,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
       {isMenuOpen && (
         <div className="md:hidden fade-in">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-teal-800">
-            <button
-              onClick={() => {
-                onNavigate(1);
-                toggleMenu();
-              }}
-              className="block px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
-            >
-              How It Works
-            </button>
             <button
               onClick={() => {
                 togglePricing();
@@ -158,7 +187,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
               <div className="bg-teal-900 p-6 rounded-lg text-white">
                 <h3 className="text-xl font-bold mb-2">Premium Membership</h3>
-                <div className="text-2xl font-bold mb-4">$9.99/month</div>
+                <div className="text-2xl font-bold mb-4">$6.99/month</div>
                 <ul className="space-y-2 mb-4">
                   <li className="flex items-center">
                     <span className="mr-2">✓</span> Unlimited songs
