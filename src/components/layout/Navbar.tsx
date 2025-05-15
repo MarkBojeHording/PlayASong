@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Guitar, Sparkles, Music, Heart, User } from 'lucide-react';
+import { Menu, X, Guitar, Sparkles, Music, Heart, User, Home } from 'lucide-react';
 
 interface NavbarProps {
   onNavigate: (step: number) => void;
@@ -35,14 +35,13 @@ const Navbar: React.FC<NavbarProps> = ({
     };
   }, [logoAnim]);
 
-  const handleLogoIconClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleLogoClick = () => {
     setLogoAnim('animate-logo-click');
     setTimeout(() => setLogoAnim(''), 700);
     onNavigate(1);
   };
 
-  const handleLogoIconMouseEnter = () => {
+  const handleLogoMouseEnter = () => {
     setLogoAnim('animate-logo-scroll');
     setTimeout(() => setLogoAnim(''), 700);
   };
@@ -59,11 +58,11 @@ const Navbar: React.FC<NavbarProps> = ({
     <nav className="bg-teal-900 text-white sticky top-0 z-50 shadow-md">
       <div className="w-full">
         <div className="flex justify-between h-20 px-4">
-          <div className="flex items-center">
+          <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-3 select-none">
               <button
-                onClick={handleLogoIconClick}
-                onMouseEnter={handleLogoIconMouseEnter}
+                onClick={handleLogoClick}
+                onMouseEnter={handleLogoMouseEnter}
                 className={`focus:outline-none ${logoAnim}`}
                 type="button"
                 aria-label="Home"
@@ -79,6 +78,14 @@ const Navbar: React.FC<NavbarProps> = ({
                 PlayASong
               </button>
             </div>
+
+            <button
+              onClick={() => onNavigate(1)}
+              className="hidden md:flex items-center space-x-2 text-cream-100 hover:text-coral-500 transition-colors"
+            >
+              <Home className="h-5 w-5" />
+              <span>Home</span>
+            </button>
           </div>
 
           {/* Badges */}
@@ -155,6 +162,16 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-teal-800">
             <button
               onClick={() => {
+                onNavigate(1);
+                toggleMenu();
+              }}
+              className="flex items-center space-x-2 px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
+            >
+              <Home className="h-5 w-5" />
+              <span>Home</span>
+            </button>
+            <button
+              onClick={() => {
                 togglePricing();
                 toggleMenu();
               }}
@@ -178,9 +195,10 @@ const Navbar: React.FC<NavbarProps> = ({
                   onProfileClick();
                   toggleMenu();
                 }}
-                className="block px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
+                className="flex items-center space-x-2 px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
               >
-                Profile
+                <User className="h-5 w-5" />
+                <span>Profile</span>
               </button>
             ) : (
               <button
