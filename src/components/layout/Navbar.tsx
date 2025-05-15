@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Guitar, Sparkles, Music, Heart, User, Home } from 'lucide-react';
+import { Menu, X, Guitar, Sparkles, Music, Heart, User, LogIn } from 'lucide-react';
 
 interface NavbarProps {
   onNavigate: (step: number) => void;
@@ -78,14 +78,6 @@ const Navbar: React.FC<NavbarProps> = ({
                 PlayASong
               </button>
             </div>
-
-            <button
-              onClick={() => onNavigate(1)}
-              className="hidden md:flex items-center space-x-2 text-cream-100 hover:text-coral-500 transition-colors"
-            >
-              <Home className="h-5 w-5" />
-              <span>Home</span>
-            </button>
           </div>
 
           {/* Badges */}
@@ -128,14 +120,15 @@ const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center space-x-2 text-cream-100 hover:text-coral-500 transition-colors"
               >
                 <User className="h-5 w-5" />
-                <span>Profile</span>
+                <span>My Profile</span>
               </button>
             ) : (
               <button
                 onClick={onLoginClick}
-                className="bg-coral-500 text-white px-4 py-2 rounded-lg hover:bg-coral-600 transition-colors"
+                className="flex items-center space-x-2 bg-coral-500 text-white px-4 py-2 rounded-lg hover:bg-coral-600 transition-colors"
               >
-                Log In
+                <LogIn className="h-5 w-5" />
+                <span>Log In</span>
               </button>
             )}
           </div>
@@ -167,7 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({
               }}
               className="flex items-center space-x-2 px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
             >
-              <Home className="h-5 w-5" />
+              <Guitar className="h-5 w-5" />
               <span>Home</span>
             </button>
             <button
@@ -198,7 +191,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center space-x-2 px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
               >
                 <User className="h-5 w-5" />
-                <span>Profile</span>
+                <span>My Profile</span>
               </button>
             ) : (
               <button
@@ -206,9 +199,10 @@ const Navbar: React.FC<NavbarProps> = ({
                   onLoginClick();
                   toggleMenu();
                 }}
-                className="block px-3 py-2 w-full text-left rounded-md bg-coral-500 text-white hover:bg-coral-600"
+                className="flex items-center space-x-2 px-3 py-2 w-full text-left rounded-md bg-coral-500 text-white hover:bg-coral-600"
               >
-                Log In
+                <LogIn className="h-5 w-5" />
+                <span>Log In</span>
               </button>
             )}
           </div>
