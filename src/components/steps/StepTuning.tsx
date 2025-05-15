@@ -73,6 +73,12 @@ const StepTuning: React.FC<StepTuningProps> = ({ onNext }) => {
     );
   };
 
+  const markAllAsTuned = () => {
+    setTuningNotes(prev =>
+      prev.map(note => ({ ...note, isInTune: true }))
+    );
+  };
+
   return (
     <div className="step-container fade-in">
       <div className="max-w-5xl mx-auto text-center mb-12">
@@ -126,11 +132,18 @@ const StepTuning: React.FC<StepTuningProps> = ({ onNext }) => {
         </div>
 
         <div className="bg-white rounded-lg p-6 mb-8">
-          <p className="text-charcoal-800 mb-6">
-            Click a string to hear its correct pitch, then play it on your guitar.
-            Adjust the tuning pegs until our AI confirms it's spot-on. For this demo,
-            you can manually mark each string as tuned.
-          </p>
+          <div className="flex justify-between items-center mb-6">
+            <p className="text-charcoal-800">
+              Click a string to hear its correct pitch, then play it on your guitar.
+              Adjust the tuning pegs until our AI confirms it's spot-on.
+            </p>
+            <button
+              onClick={markAllAsTuned}
+              className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Mark All as Tuned
+            </button>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             {tuningNotes.map((note, index) => (
