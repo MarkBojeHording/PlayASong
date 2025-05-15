@@ -1,10 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-interface StepWelcomeProps {
-  onNext: () => void;
-}
-
-const StepWelcome: React.FC<StepWelcomeProps> = ({ onNext }) => {
+const StepWelcome: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="step-container fade-in">
       <div className="text-center">
@@ -44,7 +42,10 @@ const StepWelcome: React.FC<StepWelcomeProps> = ({ onNext }) => {
       </div>
 
       <div className="mt-12 text-center">
-        <button onClick={onNext} className="btn-primary text-2xl px-16 py-5 rounded-lg transform hover:scale-105 transition-transform">
+        <button
+          onClick={() => navigate('/step-tuning')}
+          className="btn-primary text-2xl px-16 py-5 rounded-lg transform hover:scale-105 transition-transform"
+        >
           Start Your Free Song
         </button>
       </div>

@@ -6,6 +6,7 @@ interface StepSongSelectionProps {
   onNext: () => void;
   onSelectSong: (song: Song) => void;
   onSaveSong: (song: Song) => void;
+  onRemoveSong: (song: Song) => void;
   savedSongs: Song[];
 }
 
@@ -13,6 +14,7 @@ const StepSongSelection: React.FC<StepSongSelectionProps> = ({
   onNext,
   onSelectSong,
   onSaveSong,
+  onRemoveSong,
   savedSongs
 }) => {
   const [selectedGenre, setSelectedGenre] = useState<'all' | 'rock' | 'pop'>('all');
@@ -182,6 +184,7 @@ const StepSongSelection: React.FC<StepSongSelectionProps> = ({
                 song={song}
                 onSelect={handleSongSelect}
                 onSave={() => onSaveSong(song)}
+                onRemove={() => onRemoveSong(song)}
                 isSaved={savedSongs.some(s => s.id === song.id)}
               />
             ))}

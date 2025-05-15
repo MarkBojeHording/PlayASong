@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import StepWelcome from './components/steps/StepWelcome';
-import StepPickup from './components/steps/StepPickup';
 import StepTuning from './components/steps/StepTuning';
 import StepSongSelection from './components/steps/StepSongSelection';
-import StepLearnChords from './components/steps/StepLearnChords';
 import LoginPage from './components/pages/LoginPage';
 import ProfilePage from './components/pages/ProfilePage';
+import NewPasswordPage from './components/pages/NewPasswordPage';
 import { Song } from './types';
 
 const supabase = createClient(
@@ -24,7 +24,7 @@ function getStepFromUrl() {
 
 const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(getStepFromUrl());
-  const [selectedSong, setSelectedSong] = useState<Song | null>(null);
+  const setSelectedSong = useState<Song | null>(null)[1];
   const [savedSongs, setSavedSongs] = useState<Song[]>(() => {
     const saved = localStorage.getItem('savedSongs');
     return saved ? JSON.parse(saved) : [];
@@ -34,16 +34,13 @@ const App: React.FC = () => {
   const [showProfile, setShowProfile] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check initial auth state
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setIsAuthenticated(!!session);
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
-    // Update the URL when currentStep changes
     const params = new URLSearchParams(window.location.search);
     params.set('step', String(currentStep));
     const newUrl = `${window.location.pathname}?${params.toString()}`;
@@ -51,7 +48,6 @@ const App: React.FC = () => {
   }, [currentStep]);
 
   useEffect(() => {
-    // Handle browser back/forward navigation
     const handlePopState = () => {
       const step = getStepFromUrl();
       setCurrentStep(step);
@@ -63,15 +59,10 @@ const App: React.FC = () => {
   const handleStepChange = (step: number) => {
     window.scrollTo(0, 0);
     setCurrentStep(step);
-    // Update history state when step changes
     const params = new URLSearchParams(window.location.search);
     params.set('step', String(step));
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.pushState({ step }, '', newUrl);
-  };
-
-  const handleSongSelect = (song: Song) => {
-    setSelectedSong(song);
   };
 
   const handleSaveSong = (song: Song) => {
@@ -97,9 +88,12 @@ const App: React.FC = () => {
     setIsAuthenticated(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsAuthenticated(false);
-    setShowProfile(false);
+    setCurrentStep(1);
+    setSavedSongs([]);
+    localStorage.removeItem('savedSongs');
   };
 
   if (showLogin) {
@@ -134,57 +128,55 @@ const App: React.FC = () => {
     );
   }
 
-  const renderCurrentStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <StepWelcome onNext={() => handleStepChange(2)} />;
-      case 2:
-        return <StepPickup onNext={() => handleStepChange(3)} />;
-      case 3:
-        return <StepTuning onNext={() => handleStepChange(4)} />;
-      case 4:
-        return (
-          <StepSongSelection
-            onNext={() => handleStepChange(5)}
-            onSelectSong={handleSongSelect}
-            onSaveSong={handleSaveSong}
-            savedSongs={savedSongs}
-          />
-        );
-      case 5:
-        return (
-          <StepLearnChords
-            song={selectedSong}
-            onComplete={() => handleStepChange(1)}
-            onSaveSong={handleSaveSong}
-            onReturnHome={() => handleStepChange(1)}
-            hasFreeTrialUsed={false}
-          />
-        );
-      default:
-        return <StepWelcome onNext={() => handleStepChange(2)} />;
-    }
-  };
-
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar
-        currentStep={currentStep}
-        onNavigate={handleStepChange}
-        isAuthenticated={isAuthenticated}
-        onLoginClick={() => setShowLogin(true)}
-        onProfileClick={() => setShowProfile(true)}
-      />
-      <main className="flex-grow bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=1920')",
-              backgroundBlendMode: "overlay",
-              backgroundColor: "rgba(0, 0, 0, 0.35)"
-            }}>
-        {renderCurrentStep()}
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Navbar
+          currentStep={currentStep}
+          onNavigate={handleStepChange}
+          isAuthenticated={isAuthenticated}
+          onLoginClick={() => setShowLogin(true)}
+          onProfileClick={() => setShowProfile(true)}
+        />
+        <main className="flex-grow bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=1920')",
+                backgroundBlendMode: "overlay",
+                backgroundColor: "rgba(0, 0, 0, 0.35)"
+              }}>
+          <Routes>
+            <Route path="/" element={<StepWelcome />} />
+            <Route
+              path="/step-tuning"
+              element={
+                <StepTuning onNext={() => { window.history.pushState({}, '', '/step1'); window.dispatchEvent(new PopStateEvent('popstate')); }} />
+              }
+            />
+            <Route
+              path="/step1"
+              element={
+                <StepSongSelection
+                  onNext={() => handleStepChange(5)}
+                  onSelectSong={setSelectedSong}
+                  onSaveSong={handleSaveSong}
+                  onRemoveSong={handleRemoveSong}
+                  savedSongs={savedSongs}
+                />
+              }
+            />
+            <Route
+              path="/new-password"
+              element={<NewPasswordPage />}
+            />
+            <Route
+              path="/login"
+              element={<LoginPage onLogin={handleLogin} />}
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 };
 

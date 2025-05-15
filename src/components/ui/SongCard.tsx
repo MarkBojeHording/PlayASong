@@ -6,13 +6,15 @@ interface SongCardProps {
   song: Song;
   onSelect: (song: Song) => void;
   onSave: () => void;
+  onRemove?: () => void;
   isSaved: boolean;
 }
 
-const SongCard: React.FC<SongCardProps> = ({ 
-  song, 
-  onSelect, 
+const SongCard: React.FC<SongCardProps> = ({
+  song,
+  onSelect,
   onSave,
+  onRemove,
   isSaved
 }) => {
   const playPreview = (e: React.MouseEvent) => {
@@ -23,11 +25,15 @@ const SongCard: React.FC<SongCardProps> = ({
 
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onSave();
+    if (isSaved && onRemove) {
+      onRemove();
+    } else {
+      onSave();
+    }
   };
 
   return (
-    <div 
+    <div
       className="border rounded-lg overflow-hidden shadow-md cursor-pointer transition-all hover:shadow-coral hover:scale-105"
       onClick={() => onSelect(song)}
     >
@@ -47,11 +53,11 @@ const SongCard: React.FC<SongCardProps> = ({
         <button
           onClick={handleSave}
           className={`absolute bottom-2 right-12 p-2 rounded-full transition-colors ${
-            isSaved 
-              ? 'bg-coral-500 text-white' 
+            isSaved
+              ? 'bg-coral-500 text-white hover:bg-red-500'
               : 'bg-teal-900 text-white hover:bg-teal-800'
           }`}
-          aria-label={isSaved ? "Saved" : "Save song"}
+          aria-label={isSaved ? "Remove from saved" : "Save song"}
         >
           <Heart size={16} fill={isSaved ? "currentColor" : "none"} />
         </button>
