@@ -6,7 +6,7 @@ interface StepPickupProps {
 
 const StepPickup: React.FC<StepPickupProps> = ({ onNext }) => {
   return (
-    <div className="step-container fade-in h-screen flex flex-col pt-12">
+    <div className="step-container fade-in">
       <div className="max-w-3xl mx-auto text-center mb-8">
         <h1 className="text-3xl font-bold mb-3 text-white">Grab Your Guitar</h1>
         <p className="text-xl text-white">Let's get ready to play.</p>

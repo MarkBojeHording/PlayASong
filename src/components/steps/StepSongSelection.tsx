@@ -135,8 +135,8 @@ const StepSongSelection: React.FC<StepSongSelectionProps> = ({
   return (
     <div className="step-container fade-in">
       <div className="max-w-4xl mx-auto text-center mb-8">
-        <h1 className="text-3xl font-bold mb-3 text-charcoal-900">Choose Your Song</h1>
-        <p className="text-xl text-charcoal-700">Pick a song to learn today.</p>
+        <h1 className="text-3xl font-bold mb-3 text-white">Choose Your Song</h1>
+        <p className="text-xl text-white">Pick a song to learn today.</p>
       </div>
 
       <div className="max-w-4xl mx-auto">
