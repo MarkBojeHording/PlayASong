@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ChordDiagram from '../ui/ChordDiagram';
 import { Song } from '../../types';
 
 interface StepLearnChordsProps {
@@ -43,31 +42,24 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
   }
 
   const listenForChord = () => {
-    // In a real app, this would use the Klangio API or Web Audio API
-    // For demo purposes, we'll simulate successful chord detection
     setIsListening(true);
     setFeedback('Listening...');
 
+    // Simulate microphone listening with visual feedback
     setTimeout(() => {
       setIsListening(false);
-      // Simulate 80% success rate
-      const isCorrect = Math.random() > 0.2;
-
-      if (isCorrect) {
-        setFeedback(`Perfect! ${song.chords[currentChordIndex].name} sounds great!`);
-        setTimeout(() => {
-          if (currentChordIndex < song.chords.length - 1) {
-            setCurrentChordIndex(prev => prev + 1);
-            setFeedback('');
-          } else {
-            setIsCompleted(true);
-            onComplete();
-          }
-        }, 1500);
-      } else {
-        setFeedback(`Try again. Check your finger positions for ${song.chords[currentChordIndex].name}.`);
-      }
+      setFeedback(`Perfect! ${song.chords[currentChordIndex].name} sounds great!`);
     }, 2000);
+  };
+
+  const handleContinue = () => {
+    if (currentChordIndex < song.chords.length - 1) {
+      setCurrentChordIndex(prev => prev + 1);
+      setFeedback('');
+    } else {
+      setIsCompleted(true);
+      onComplete();
+    }
   };
 
   return (
@@ -105,7 +97,7 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                 <div className="mb-6">
                   <div className="flex justify-between text-sm mb-1">
                     <span>Progress</span>
-                    <span>{currentChordIndex}/{song.chords.length} chords</span>
+                    <span>{currentChordIndex + 1}/{song.chords.length} chords</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div
@@ -134,40 +126,57 @@ const StepLearnChords: React.FC<StepLearnChordsProps> = ({
                     Current Chord: <span className="text-coral-500">{song.chords[currentChordIndex].name}</span>
                   </h2>
                   <p className="text-charcoal-700 mb-4">
-                    Position your fingers as shown in the diagram and strum all strings clearly.
+                    Follow the finger positions shown below and strum all strings.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-4 mb-8">
-                  {song.chords.map((chord, index) => (
-                    <ChordDiagram
-                      key={chord.name + index}
-                      chord={chord}
-                      isActive={index === currentChordIndex}
+                <div className="mb-8">
+                  {/* Visual chord diagram with hand position */}
+                  <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
+                    <img
+                      src={`https://images.pexels.com/photos/7520935/pexels-photo-7520935.jpeg?auto=compress&cs=tinysrgb&w=1280`}
+                      alt={`How to play ${song.chords[currentChordIndex].name} chord`}
+                      className="w-full h-full object-cover"
                     />
-                  ))}
-                </div>
-
-                {feedback && (
-                  <div className={`mb-6 p-4 rounded-lg ${
-                    feedback.includes('Perfect')
-                      ? 'bg-green-100 text-green-800'
-                      : feedback.includes('Try again')
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-blue-100 text-blue-800'
-                  }`}>
-                    {feedback}
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <div className="text-center text-white">
+                        <h3 className="text-3xl font-bold mb-2">{song.chords[currentChordIndex].name}</h3>
+                        <p className="text-lg">Finger position: {song.chords[currentChordIndex].fingering}</p>
+                      </div>
+                    </div>
                   </div>
-                )}
 
-                <button
-                  onClick={listenForChord}
-                  disabled={isListening}
-                  type="button"
-                  className={`btn-primary w-full py-3 ${isListening ? 'opacity-75 cursor-not-allowed' : ''}`}
-                >
-                  {isListening ? 'Listening...' : `Play ${song.chords[currentChordIndex].name} Chord`}
-                </button>
+                  {feedback && (
+                    <div className={`mb-6 p-4 rounded-lg ${
+                      feedback.includes('Perfect')
+                        ? 'bg-green-100 text-green-800'
+                        : feedback.includes('Try again')
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {feedback}
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <button
+                      onClick={listenForChord}
+                      disabled={isListening}
+                      className={`w-full btn-primary py-3 ${isListening ? 'opacity-75 cursor-not-allowed' : ''}`}
+                    >
+                      {isListening ? 'Listening...' : `Play ${song.chords[currentChordIndex].name} Chord`}
+                    </button>
+
+                    {feedback.includes('Perfect') && (
+                      <button
+                        onClick={handleContinue}
+                        className="w-full btn-secondary py-3"
+                      >
+                        Continue to Next Chord
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
