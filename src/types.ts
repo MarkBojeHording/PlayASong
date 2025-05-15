@@ -35,7 +35,9 @@ export interface TuningNote {
 }
 
 export interface User {
-  name: string;
-  isPremium: boolean;
+  id: string;
+  email: string;
+  savedSongs: string[];
   songsCompleted: string[];
+  createdAt: string;
 }
