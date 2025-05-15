@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import StepWelcome from './components/steps/StepWelcome';
@@ -6,7 +7,14 @@ import StepPickup from './components/steps/StepPickup';
 import StepTuning from './components/steps/StepTuning';
 import StepSongSelection from './components/steps/StepSongSelection';
 import StepLearnChords from './components/steps/StepLearnChords';
+import LoginPage from './components/pages/LoginPage';
+import ProfilePage from './components/pages/ProfilePage';
 import { Song } from './types';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 function getStepFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -18,6 +26,18 @@ const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(getStepFromUrl());
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [savedSongs, setSavedSongs] = useState<Song[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [showProfile, setShowProfile] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Check initial auth state
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     // Update the URL when currentStep changes
@@ -52,10 +72,44 @@ const App: React.FC = () => {
   };
 
   const handleSaveSong = (song: Song) => {
+    if (!isAuthenticated) {
+      setShowLogin(true);
+      return;
+    }
     if (!savedSongs.find(s => s.id === song.id)) {
       setSavedSongs([...savedSongs, song]);
     }
   };
+
+  const handleLogin = () => {
+    setShowLogin(false);
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setShowProfile(false);
+  };
+
+  if (showLogin) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
+  if (showProfile) {
+    return (
+      <>
+        <Navbar
+          currentStep={currentStep}
+          onNavigate={handleStepChange}
+          isAuthenticated={isAuthenticated}
+          onLoginClick={() => setShowLogin(true)}
+          onProfileClick={() => setShowProfile(true)}
+        />
+        <ProfilePage savedSongs={savedSongs} onLogout={handleLogout} />
+        <Footer />
+      </>
+    );
+  }
 
   const renderCurrentStep = () => {
     switch (currentStep) {
@@ -94,6 +148,9 @@ const App: React.FC = () => {
       <Navbar
         currentStep={currentStep}
         onNavigate={handleStepChange}
+        isAuthenticated={isAuthenticated}
+        onLoginClick={() => setShowLogin(true)}
+        onProfileClick={() => setShowProfile(true)}
       />
       <main className="flex-grow bg-cover bg-center bg-no-repeat"
             style={{

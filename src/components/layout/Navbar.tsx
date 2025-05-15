@@ -1,18 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Guitar, Sparkles, Music, Heart } from 'lucide-react';
+import { Menu, X, Guitar, Sparkles, Music, Heart, User } from 'lucide-react';
 
 interface NavbarProps {
   onNavigate: (step: number) => void;
   currentStep: number;
+  isAuthenticated: boolean;
+  onLoginClick: () => void;
+  onProfileClick: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  onNavigate,
+  isAuthenticated,
+  onLoginClick,
+  onProfileClick
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
   const [logoAnim, setLogoAnim] = useState('');
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Handle scroll animation
   useEffect(() => {
     const handleScroll = () => {
       if (!logoAnim) {
@@ -28,7 +35,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
     };
   }, [logoAnim]);
 
-  // Handle click animation (icon only)
   const handleLogoIconClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setLogoAnim('animate-logo-click');
@@ -36,7 +42,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
     onNavigate(1);
   };
 
-  // Handle hover animation (icon only)
   const handleLogoIconMouseEnter = () => {
     setLogoAnim('animate-logo-scroll');
     setTimeout(() => setLogoAnim(''), 700);
@@ -110,6 +115,22 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
             >
               Contact
             </button>
+            {isAuthenticated ? (
+              <button
+                onClick={onProfileClick}
+                className="flex items-center space-x-2 text-cream-100 hover:text-coral-500 transition-colors"
+              >
+                <User className="h-5 w-5" />
+                <span>Profile</span>
+              </button>
+            ) : (
+              <button
+                onClick={onLoginClick}
+                className="bg-coral-500 text-white px-4 py-2 rounded-lg hover:bg-coral-600 transition-colors"
+              >
+                Log In
+              </button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -151,6 +172,27 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
             >
               Contact
             </button>
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  onProfileClick();
+                  toggleMenu();
+                }}
+                className="block px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
+              >
+                Profile
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  onLoginClick();
+                  toggleMenu();
+                }}
+                className="block px-3 py-2 w-full text-left rounded-md bg-coral-500 text-white hover:bg-coral-600"
+              >
+                Log In
+              </button>
+            )}
           </div>
         </div>
       )}
