@@ -25,7 +25,10 @@ function getStepFromUrl() {
 const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(getStepFromUrl());
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
-  const [savedSongs, setSavedSongs] = useState<Song[]>([]);
+  const [savedSongs, setSavedSongs] = useState<Song[]>(() => {
+    const saved = localStorage.getItem('savedSongs');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
@@ -77,8 +80,16 @@ const App: React.FC = () => {
       return;
     }
     if (!savedSongs.find(s => s.id === song.id)) {
-      setSavedSongs([...savedSongs, song]);
+      const newSavedSongs = [...savedSongs, song];
+      setSavedSongs(newSavedSongs);
+      localStorage.setItem('savedSongs', JSON.stringify(newSavedSongs));
     }
+  };
+
+  const handleRemoveSong = (song: Song) => {
+    const newSavedSongs = savedSongs.filter(s => s.id !== song.id);
+    setSavedSongs(newSavedSongs);
+    localStorage.setItem('savedSongs', JSON.stringify(newSavedSongs));
   };
 
   const handleLogin = () => {
@@ -105,7 +116,19 @@ const App: React.FC = () => {
           onLoginClick={() => setShowLogin(true)}
           onProfileClick={() => setShowProfile(true)}
         />
-        <ProfilePage savedSongs={savedSongs} onLogout={handleLogout} />
+        <ProfilePage
+          savedSongs={savedSongs}
+          onLogout={handleLogout}
+          onSaveSong={handleSaveSong}
+          onRemoveSong={handleRemoveSong}
+          onNavigate={(step, song) => {
+            if (song) {
+              setSelectedSong(song);
+            }
+            setShowProfile(false);
+            handleStepChange(step);
+          }}
+        />
         <Footer />
       </>
     );

@@ -99,6 +99,14 @@ const Navbar: React.FC<NavbarProps> = ({
           {/* Desktop navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <button
+              onClick={() => {
+                window.location.href = '/?step=1';
+              }}
+              className="text-cream-100 hover:text-coral-500 transition-colors"
+            >
+              Home
+            </button>
+            <button
               onClick={togglePricing}
               className="text-cream-100 hover:text-coral-500 transition-colors"
             >
@@ -155,13 +163,12 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-teal-800">
             <button
               onClick={() => {
-                onNavigate(1);
+                window.location.href = '/?step=1';
                 toggleMenu();
               }}
-              className="flex items-center space-x-2 px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
+              className="block px-3 py-2 w-full text-left rounded-md text-cream-100 hover:bg-teal-700 hover:text-coral-500"
             >
-              <Guitar className="h-5 w-5" />
-              <span>Home</span>
+              Home
             </button>
             <button
               onClick={() => {

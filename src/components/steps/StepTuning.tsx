@@ -132,6 +132,53 @@ const StepTuning: React.FC<StepTuningProps> = ({ onNext }) => {
         </div>
 
         <div className="bg-white rounded-lg p-6 mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-charcoal-900 text-center">How to Tune Your Guitar</h2>
+          <div className="flex flex-col md:flex-row items-center gap-8 mb-6">
+            <div className="flex-1">
+              <div className="relative w-full aspect-[4/3] bg-cream-100 rounded-lg shadow-lg overflow-hidden">
+                <img
+                  src="/images/guitar-tuning-pegs.png"
+                  alt="Guitar tuning pegs"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.innerHTML = `
+                      <div class="w-full h-full flex items-center justify-center p-6 text-center">
+                        <div>
+                          <svg class="w-16 h-16 mx-auto mb-4 text-charcoal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <p class="text-charcoal-600">Image of guitar tuning pegs will be displayed here</p>
+                        </div>
+                      </div>
+                    `;
+                  }}
+                />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold mb-4 text-charcoal-900">Tuning Instructions:</h3>
+              <ol className="list-decimal list-inside space-y-3 text-charcoal-800">
+                <li>Hold your guitar in playing position</li>
+                <li>Locate the tuning pegs at the headstock (shown in image)</li>
+                <li>For each string:
+                  <ul className="list-disc list-inside ml-6 mt-2 space-y-2">
+                    <li>Click the string button to hear the correct pitch</li>
+                    <li>Pluck the corresponding string on your guitar</li>
+                    <li>If the pitch is too low, turn the tuning peg clockwise</li>
+                    <li>If the pitch is too high, turn the tuning peg counterclockwise</li>
+                    <li>Make small adjustments until the pitches match</li>
+                  </ul>
+                </li>
+                <li>Always tune up to the note, not down</li>
+                <li>Check each string multiple times as tuning one string can affect others</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
             <p className="text-charcoal-800">
               Click a string to hear its correct pitch, then play it on your guitar.
